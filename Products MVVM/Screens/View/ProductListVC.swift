@@ -52,7 +52,7 @@ extension ProductListVC {
                     self.productTableview.reloadData()
                 }
             case .error(let error):
-                print(error)
+                print("test error\(error)")
             }
         }
     }
