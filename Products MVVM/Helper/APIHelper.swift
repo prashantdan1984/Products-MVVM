@@ -16,41 +16,76 @@ enum Dataerror: Error {
     case invaliddata
     case network(Error?)
 }
-typealias Handler = (Result<[Product], Dataerror>) -> Void
+//typealias Handler = (Result<[Product], Dataerror>) -> Void
+typealias Handler<T> = (Result<T, Dataerror>) -> Void
 
 final class APIHelper {
     static let shared = APIHelper()
     //var arrproduct = []
     private init() {}
-    func fetchProduct(completion: @escaping Handler) {
-        guard let url = URL(string: Constant.API.productURL) else {
-            completion(.failure(.invalidurl))
-            return
-        }
-        //Background Task
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data else{
-                completion(.failure(.invaliddata))
+    
+    func request<T: Decodable>(
+        modelType: T.Type,
+        type: EndPointType,
+        completion: @escaping Handler<T>) {
+            
+            guard let url = type.url else {
+                completion(.failure(.invalidurl))
                 return
             }
-            
-            guard let response = response as? HTTPURLResponse,
-                  200 ... 299 ~= response.statusCode else {
-                      completion(.failure(.invalidresponse))
-                      return
-                  }
-            
-            // Jsondecoder is converting data to model
-            do{
-                let products = try JSONDecoder().decode([Product].self, from: data)
-                completion(.success(products))
-            }catch{
-                completion(.failure(.network(error)))
-            }
-            
-        }.resume()
-        
-    }
+            //Background Task
+            URLSession.shared.dataTask(with: url) { data, response, error in
+                guard let data = data else{
+                    completion(.failure(.invaliddata))
+                    return
+                }
+    
+                guard let response = response as? HTTPURLResponse,
+                      200 ... 299 ~= response.statusCode else {
+                          completion(.failure(.invalidresponse))
+                          return
+                      }
+    
+                // Jsondecoder is converting data to model
+                do{
+                    let products = try JSONDecoder().decode(modelType, from: data)
+                    completion(.success(products))
+                }catch{
+                    completion(.failure(.network(error)))
+                }
+    
+            }.resume()
+        }
+    
+//    func fetchProduct(completion: @escaping Handler) {
+//        guard let url = URL(string: Constant.API.productURL) else {
+//            completion(.failure(.invalidurl))
+//            return
+//        }
+//        //Background Task
+//        URLSession.shared.dataTask(with: url) { data, response, error in
+//            guard let data = data else{
+//                completion(.failure(.invaliddata))
+//                return
+//            }
+//
+//            guard let response = response as? HTTPURLResponse,
+//                  200 ... 299 ~= response.statusCode else {
+//                      completion(.failure(.invalidresponse))
+//                      return
+//                  }
+//
+//            // Jsondecoder is converting data to model
+//            do{
+//                let products = try JSONDecoder().decode([Product].self, from: data)
+//                completion(.success(products))
+//            }catch{
+//                completion(.failure(.network(error)))
+//            }
+//
+//        }.resume()
+//
+//    }
 }
 
 // singleton Design Pattern Small "s" allow create object out side the class

@@ -14,19 +14,36 @@ final class ProductViewModel {
     
     func fetchproducts() {
         self.eventHandler?(.loading)
-        APIHelper.shared.fetchProduct { response in
-            self.eventHandler?(.stopLoading)
-            switch response{
-            case .success(let products):
-                self.eventHandler?(.dataLoaded)
-                print(products)
-                self.product = products
-            case .failure(let error):
-                print(error)
-                self.eventHandler?(.error(error))
+        APIHelper.shared.request(
+            modelType: [Product].self,
+            type: EndPointItem.products) { response in
+                self.eventHandler?(.stopLoading)
+                switch response{
+                case .success(let products):
+                    self.eventHandler?(.dataLoaded)
+                    print(products)
+                    self.product = products
+                case .failure(let error):
+                    print(error)
+                    self.eventHandler?(.error(error))
+                }
             }
-        }
     }
+//    func fetchproducts() {
+//        self.eventHandler?(.loading)
+//        APIHelper.shared.fetchProduct { response in
+//            self.eventHandler?(.stopLoading)
+//            switch response{
+//            case .success(let products):
+//                self.eventHandler?(.dataLoaded)
+//                print(products)
+//                self.product = products
+//            case .failure(let error):
+//                print(error)
+//                self.eventHandler?(.error(error))
+//            }
+//        }
+//    }
 }
 
 extension ProductViewModel {
