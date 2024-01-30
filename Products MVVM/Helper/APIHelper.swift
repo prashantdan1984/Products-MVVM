@@ -5,8 +5,7 @@
 //  Created by Prashantdan on 20/01/24.
 //
 
-import UIKit
-import SwiftUI
+import Foundation
 
 //Singleton Design Pattern Caps "S" object not allowed to create out of the class
 // final keyword will help to manage restrict inheritans of singaleton class
