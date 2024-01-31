@@ -53,6 +53,8 @@ extension ProductListVC {
                 }
             case .error(let error):
                 print(error)
+            case .newProductAdded(let newProduct):
+                print(newProduct)
             }
         }
     }

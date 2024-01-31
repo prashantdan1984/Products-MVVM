@@ -14,36 +14,10 @@ enum HTTPMethods: String{
 }
 
 protocol EndPointType {
-    var path: String {get}
-    var baseURL: String {get}
-    var url: URL? {get}
-    var method: HTTPMethods {get}
-}
-
-enum EndPointItem {
-    case products //Module
-}
-
-//https://fakestoreapi.com/products
-extension EndPointItem: EndPointType{
-    var path: String {
-        return "products"
-    }
-    
-    var baseURL: String {
-        return "https://fakestoreapi.com/"
-    }
-    
-    var url: URL? {
-        return URL(string: "\(baseURL)\(path)")
-    }
-    
-    var method: HTTPMethods {
-        switch self {
-        case .products:
-            return .get
-        }
-    }
-    
-    
+    var path: String { get }
+    var baseURL: String { get }
+    var url: URL? { get }
+    var method: HTTPMethods { get }
+    var body: Encodable? { get }
+    var headers: [String: String]? { get }
 }

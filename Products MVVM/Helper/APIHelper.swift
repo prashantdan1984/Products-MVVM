@@ -18,12 +18,14 @@ enum Dataerror: Error {
 //typealias Handler = (Result<[Product], Dataerror>) -> Void
 typealias Handler<T> = (Result<T, Dataerror>) -> Void
 
+
 final class APIHelper {
+    
     static let shared = APIHelper()
     //var arrproduct = []
     private init() {}
     
-    func request<T: Decodable>(
+    func request<T: Codable>(
         modelType: T.Type,
         type: EndPointType,
         completion: @escaping Handler<T>) {
@@ -32,8 +34,17 @@ final class APIHelper {
                 completion(.failure(.invalidurl))
                 return
             }
+            
+            var request = URLRequest(url: url)
+            request.httpMethod = type.method.rawValue
+            
+            if let parameterts = type.body {
+                request.httpBody = try? JSONEncoder().encode(type.body)
+            }
+            request.allHTTPHeaderFields = type.headers
+            
             //Background Task
-            URLSession.shared.dataTask(with: url) { data, response, error in
+            URLSession.shared.dataTask(with: request) { data, response, error in
                 guard let data = data else{
                     completion(.failure(.invaliddata))
                     return
@@ -55,7 +66,11 @@ final class APIHelper {
     
             }.resume()
         }
-    
+    static var commonheader: [String: String] {
+        return[
+            "Content-Type": "application/json"
+        ]
+    }
 //    func fetchProduct(completion: @escaping Handler) {
 //        guard let url = URL(string: Constant.API.productURL) else {
 //            completion(.failure(.invalidurl))
