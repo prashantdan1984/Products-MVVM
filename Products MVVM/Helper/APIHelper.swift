@@ -39,7 +39,16 @@ final class APIHelper {
             request.httpMethod = type.method.rawValue
             
             if let parameterts = type.body {
-                request.httpBody = try? JSONEncoder().encode(type.body)
+    
+                print(parameterts)
+               // var temp = parameterts
+                request.httpBody = try? JSONEncoder().encode(type.body as! AddProduct)
+                
+                //var product: AddProduct = parameterts as! AddProduct
+                //product.title
+                //request.httpBody = try? JSONEncoder().encode(product)
+               // var temp = try? JSONEncoder().encode(parameterts)//(AddProduct(title: "BMW Car"))
+              //  request.httpBody = try? JSONEncoder().encode(AddProduct(title: "BMW Car"))//(type.body)
             }
             request.allHTTPHeaderFields = type.headers
             

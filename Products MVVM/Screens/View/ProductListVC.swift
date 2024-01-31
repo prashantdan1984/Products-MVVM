@@ -20,6 +20,10 @@ class ProductListVC: UIViewController {
     }
     
     // MARK: -
+    @IBAction func addProductButtonTapped(_ sender: UIBarButtonItem) {
+        let product = AddProduct(title: "iPhone")
+        viewModel.addProduct(parameters: product)
+    }
 }
 extension ProductListVC {
     func configuration() {
